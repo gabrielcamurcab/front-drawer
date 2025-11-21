@@ -2,13 +2,18 @@
 
 import React, { useState, useEffect } from 'react';
 import { useSession } from '@/hooks/useSession';
-import { addName, getNames, drawName } from '@/services/api';
+import { addName, getNames, drawName, createSession } from '@/services/api';
 import { NameInput } from '@/components/NameInput';
 import { NameList } from '@/components/NameList';
 import { DrawSection } from '@/components/DrawSection';
+import { motion } from 'framer-motion';
+
+const SESSION_KEY = 'drawer_session_id';
+const SESSION_EXPIRY_KEY = 'drawer_session_expiry';
+const SESSION_DURATION = 24 * 60 * 60 * 1000; // 24 hours
 
 export default function Home() {
-    const { sessionId, loading } = useSession();
+    const { sessionId, loading, refreshSession } = useSession();
     const [names, setNames] = useState<string[]>([]);
     const [error, setError] = useState<string | null>(null);
 
@@ -47,6 +52,17 @@ export default function Home() {
         return await drawName(sessionId);
     };
 
+    const handleNewSession = async () => {
+        try {
+            await refreshSession();
+            setNames([]);
+            setError(null);
+        } catch (err) {
+            console.error('Failed to create new session:', err);
+            setError('Erro ao criar nova sessão.');
+        }
+    };
+
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-slate-900 text-white">
@@ -70,6 +86,15 @@ export default function Home() {
                         {error}
                     </div>
                 )}
+
+                <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleNewSession}
+                    className="px-4 py-2 bg-gradient-to-r from-pink-500 to-orange-500 text-white text-lg font-bold rounded-2xl shadow-xl hover:shadow-2xl disabled:opacity-50 mb-4 disabled:cursor-not-allowed transition-all transform"
+                >
+                    Resetar
+                </motion.button>
 
                 <div className="w-full flex flex-col items-center gap-8">
                     <NameInput onAddName={handleAddName} disabled={!sessionId} />

@@ -34,5 +34,21 @@ export const useSession = () => {
         initializeSession();
     }, []);
 
-    return { sessionId, loading };
+    const refreshSession = async () => {
+        setLoading(true);
+        try {
+            const newSessionId = await createSession();
+            localStorage.setItem(SESSION_KEY, newSessionId);
+            localStorage.setItem(SESSION_EXPIRY_KEY, (new Date().getTime() + SESSION_DURATION).toString());
+            setSessionId(newSessionId);
+            return newSessionId;
+        } catch (error) {
+            console.error('Failed to refresh session:', error);
+            throw error;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return { sessionId, loading, refreshSession };
 };
