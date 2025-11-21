@@ -24,6 +24,10 @@ export const createSession = async (): Promise<string> => {
   return response.data.session_id;
 };
 
+export const dropSession = async (sessionId: string): Promise<void> => {
+  await api.delete(`/sessions/${sessionId}`);
+};
+
 export const addName = async (sessionId: string, name: string): Promise<void> => {
   await api.post(`/sessions/${sessionId}/names`, { name });
 };

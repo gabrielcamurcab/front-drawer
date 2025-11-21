@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { createSession } from '@/services/api';
+import { createSession, dropSession } from '@/services/api';
 
 const SESSION_KEY = 'drawer_session_id';
 const SESSION_EXPIRY_KEY = 'drawer_session_expiry';
@@ -37,6 +37,16 @@ export const useSession = () => {
     const refreshSession = async () => {
         setLoading(true);
         try {
+            const storedSession = localStorage.getItem(SESSION_KEY);
+            if (storedSession) {
+                try {
+                    await dropSession(storedSession);
+                } catch (e) {
+                    console.log(e);
+                    console.warn('Failed to drop old session (it might be already expired):', e);
+                }
+            }
+
             const newSessionId = await createSession();
             localStorage.setItem(SESSION_KEY, newSessionId);
             localStorage.setItem(SESSION_EXPIRY_KEY, (new Date().getTime() + SESSION_DURATION).toString());
