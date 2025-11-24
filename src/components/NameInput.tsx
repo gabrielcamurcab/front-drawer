@@ -29,7 +29,7 @@ export const NameInput: React.FC<NameInputProps> = ({ onAddName, disabled }) => 
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Digite um nome..."
+                placeholder="Digite um ou vários separados por ','"
                 className="flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white/90 backdrop-blur-sm text-gray-800 placeholder-gray-500"
                 disabled={disabled || isSubmitting}
             />
