@@ -8,10 +8,6 @@ import { NameList } from '@/components/NameList';
 import { DrawSection } from '@/components/DrawSection';
 import { motion } from 'framer-motion';
 
-const SESSION_KEY = 'drawer_session_id';
-const SESSION_EXPIRY_KEY = 'drawer_session_expiry';
-const SESSION_DURATION = 24 * 60 * 60 * 1000; // 24 hours
-
 export default function Home() {
     const { sessionId, loading, refreshSession } = useSession();
     const [names, setNames] = useState<string[]>([]);
